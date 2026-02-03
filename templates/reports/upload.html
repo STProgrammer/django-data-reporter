@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Data Reporter (Django)</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; background: #0b0f19; color: #e8ecf2; }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 28px 18px 60px; }
+    .card { background: #121a2a; border: 1px solid #22304a; border-radius: 14px; padding: 18px; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+    h1 { font-size: 22px; margin: 0 0 10px; }
+    p { margin: 6px 0 12px; color: #b9c3d6; }
+    .row { display: grid; grid-template-columns: 1fr; gap: 14px; }
+    @media (min-width: 980px) { .row { grid-template-columns: 420px 1fr; } }
+    label { display:block; margin-bottom: 6px; }
+    input[type=file] { width: 100%; padding: 10px; border-radius: 10px; border: 1px dashed #39527b; background: #0d1423; color: #e8ecf2; }
+    button { margin-top: 12px; padding: 10px 14px; border: 0; border-radius: 10px; background: #2f6fed; color: white; font-weight: 650; cursor: pointer; }
+    button:hover { filter: brightness(1.05); }
+    a.btn { display: inline-block; margin-top: 10px; padding: 10px 14px; border-radius: 10px; background: #1c2a44; color: #e8ecf2; text-decoration: none; border: 1px solid #22304a; }
+    .meta { display:flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .pill { background: #0d1423; border: 1px solid #22304a; border-radius: 999px; padding: 6px 10px; color:#cfe1ff; font-size: 12px; }
+    .section { margin-top: 14px; }
+    .table { width: 100%; border-collapse: collapse; font-size: 13px; background: #0d1423; border: 1px solid #22304a; border-radius: 10px; overflow: hidden; }
+    .table th, .table td { border-bottom: 1px solid #22304a; padding: 8px 10px; text-align: left; vertical-align: top; }
+    .table th { background: #101b2e; color: #cfe1ff; }
+    .chart { border: 1px solid #22304a; border-radius: 14px; padding: 10px; background: #0d1423; }
+    .chart img { width: 100%; height: auto; border-radius: 10px; }
+    .muted { color: #9fb0cc; font-size: 13px; }
+    .err { background: #2a1414; border: 1px solid #6b2a2a; padding: 10px; border-radius: 10px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Data Reporter (Django)</h1>
+    <p class="muted">Upload a CSV or Excel file. The app cleans the data and shows charts + summary tables. This is a portfolio-style demo for data automation.</p>
+
+    <div class="row">
+      <div class="card">
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <label for="id_dataset_type">Dataset type</label>
+          {{ form.dataset_type }}
+          <div class="muted" style="margin-top:4px;">{{ form.dataset_type.help_text }}</div>
+          <div style="height:10px;"></div>
+          <label for="id_data_file">Data file</label>
+          {{ form.data_file }}
+          {% if form.data_file.errors %}
+            <div class="err">{{ form.data_file.errors }}</div>
+          {% endif %}
+          <button type="submit">Run report</button>
+        </form>
+
+        {% if report %}
+          <div class="meta">
+            <div class="pill">Original: {{ report.original_shape.0 }} rows × {{ report.original_shape.1 }} cols</div>
+            <div class="pill">Cleaned: {{ report.cleaned_shape.0 }} rows × {{ report.cleaned_shape.1 }} cols</div>
+            <div class="pill">Selected: {{ report.dataset_type_selected }}</div>
+            <div class="pill">Inferred: {{ report.dataset_type_inferred }}</div>
+          </div>
+          <a class="btn" href="{% url 'download_cleaned_csv' %}">Download cleaned CSV</a>
+        {% endif %}
+      </div>
+
+      <div class="card">
+        {% if report %}
+          <div class="section">
+            <h2 style="font-size:16px;margin:0 0 8px;">Preview (first 20 rows)</h2>
+            <div style="overflow:auto; max-height: 320px;">{{ report.head_html|safe }}</div>
+          </div>
+
+          {% if report.stats_html %}
+          <div class="section">
+            <h2 style="font-size:16px;margin:14px 0 8px;">Numeric summary</h2>
+            <div style="overflow:auto; max-height: 280px;">{{ report.stats_html|safe }}</div>
+          </div>
+          {% endif %}
+
+          {% if report.notes and report.notes|length > 0 %}
+          <div class="section">
+            <h2 style="font-size:16px;margin:14px 0 8px;">Notes</h2>
+            <ul class="muted" style="margin:0; padding-left:18px;">
+              {% for n in report.notes %}
+                <li>{{ n }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% endif %}
+
+          <div class="section">
+            <h2 style="font-size:16px;margin:14px 0 8px;">Charts</h2>
+            <div style="display:grid; grid-template-columns: 1fr; gap: 12px;">
+              {% for c in report.charts %}
+                <div class="chart">
+                  <div class="muted" style="margin: 0 0 6px;">{{ c.title }}</div>
+                  <img alt="{{ c.title }}" src="data:image/png;base64,{{ c.png_base64 }}" />
+                </div>
+              {% endfor %}
+            </div>
+            <p class="muted" style="margin-top:10px;">Tip: Use a dataset with numeric columns to see distributions. Missing-values chart appears if missing values exist.</p>
+          </div>
+        {% else %}
+          <p class="muted">After you upload a file, you’ll see a cleaned preview, stats, and charts here.</p>
+          <p class="muted">Demo files are in <code>demo_data/</code>.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</body>
+</html>

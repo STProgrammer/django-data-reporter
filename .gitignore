@@ -1,0 +1,96 @@
+####################################
+# Python virtual environments
+####################################
+.venv/
+venv/
+env/
+ENV/
+.python-version
+
+####################################
+# Environment / secrets
+####################################
+.env
+.env.*
+*.env
+*.key
+*.secret
+
+####################################
+# Python cache / build artifacts
+####################################
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+####################################
+# Packaging / build
+####################################
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+####################################
+# Test / coverage outputs
+####################################
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+nosetests.xml
+coverage.xml
+
+####################################
+# Jupyter / IPython
+####################################
+.ipynb_checkpoints/
+profile_default/
+.ipython/
+
+####################################
+# Django local artifacts
+####################################
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+local_settings.py
+
+####################################
+# ML / data artifacts (common)
+####################################
+models/
+checkpoints/
+artifacts/
+logs/
+runs/
+wandb/
+
+####################################
+# OS-specific junk
+####################################
+.DS_Store
+Thumbs.db
+desktop.ini
+
+####################################
+# Editors / IDEs
+####################################
+.vscode/
+.idea/
+*.swp
+*.swo
+*.bak
+
+####################################
+# Misc
+####################################
+*.log
+tmp/
+temp/
+.cache/
+tmp_*.txt
