@@ -1,6 +1,6 @@
 # Data Reporter (Django) — Portfolio Demo (SimpleDataProcessing → Web UI)
 
-A small Django app that demonstrates **data automation** in a “client-looking” way:
+A small Django demo app that demonstrates **data automation** in a “client-looking” way:
 
 - Upload a **CSV** (or Excel `.xlsx`)
 - Auto-detect the dataset case (or pick it manually)
