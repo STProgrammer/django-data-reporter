@@ -20,7 +20,7 @@ The UI supports three “case-style” datasets (matching the style of your `Sim
 
 You can upload your **three CSV files** from the repo and the UI will generate case-relevant charts when it finds the expected columns.
 
-> If you want 1:1 parity with your notebook logic: keep the UI as-is and paste your exact per-case notebook transforms into `reports/data_processing.py` (functions `_case_ecommerce`, `_case_saas_churn`, `_case_marketing`).
+> If you want 1:1 parity with your notebook logic: keep the UI as-is and paste your exact per-case notebook transforms into `reports/data_processing_cases.py` (functions `_case_ecommerce`, `_case_saas_churn`, `_case_marketing`).
 
 ## Quick start (Windows)
 
