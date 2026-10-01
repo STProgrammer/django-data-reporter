@@ -166,7 +166,7 @@ _EPOCH_10_RE = re.compile(r"^\s*\d{10}\s*$")     # seconds
 _EPOCH_13_RE = re.compile(r"^\s*\d{13}\s*$")     # milliseconds
 _EPOCH_16_RE = re.compile(r"^\s*\d{16}\s*$")     # microseconds
 
-# Precise matcher: 'date', 'datetime', 'timestamp', 'time' as tokens, or *_at suffix (e.g., created_at)
+# Precise matcher: 'date', 'datetime', 'timestamp', 'time' as tokens, or *_at suffix (e.g., recorded_at)
 _DATE_NAME_RE = re.compile(r"(?:^|_)(date|datetime|timestamp|time)(?:$|_)", re.I)
 
 def _is_date_like_col(name: str) -> bool:
